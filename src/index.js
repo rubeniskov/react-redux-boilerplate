@@ -10,7 +10,7 @@ ReactDOM.render(
   <Provider store={createStore()}>
     <div>
       <UserViewData />
-      <br/>
+      <br />
       <UserLoadButton />
     </div>
   </Provider>,
