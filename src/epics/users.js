@@ -1,5 +1,4 @@
-import { combineEpics } from 'redux-observable';
-import { ofType } from 'redux-observable';
+import { combineEpics, ofType } from 'redux-observable';
 import { switchMap, delay, startWith } from 'rxjs/operators';
 import { of } from 'rxjs';
 
@@ -11,8 +10,7 @@ export const getUsers = action$ => action$.pipe(
       name: 'Tarek',
       surname: 'AKG47'
     }
-  })
-    .pipe(delay(1500), startWith({type: 'USER_LOADING'})))
+  }).pipe(delay(1500), startWith({type: 'USER_LOADING'})))
 );
 
 export const rootEpic = combineEpics(
