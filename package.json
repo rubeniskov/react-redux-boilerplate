@@ -2,11 +2,14 @@
   "name": "boilerplate",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "src/index.js",
+  "style": "src/index.scss",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "nyc ava",
+    "test:watch": "npm test -- --watch",
     "start": "npm run start:dev",
-    "start:dev": "webpack-dev-server --config ./webpack.config.js --mode development --open --hot",
+    "start:dev": "cross-env NODE_ENV=development webpack-dev-server --config ./webpack.config.js --open --hot",
+    "build": "cross-env NODE_ENV=production webpack --config ./webpack.config.js",
     "lint": "eslint src",
     "lint:fix": "eslint src --fix"
   },
@@ -14,6 +17,11 @@
     "presets": [
       "@babel/preset-env",
       "@babel/preset-react"
+    ]
+  },
+  "ava": {
+    "files": [
+      "**/*.spec.js"
     ]
   },
   "author": "",
@@ -35,16 +43,29 @@
     "ava": "^0.25.0",
     "babel-eslint": "^9.0.0",
     "babel-loader": "^8.0.2",
+    "cross-env": "^5.2.0",
+    "css-loader": "^1.0.0",
+    "enzyme": "^3.6.0",
     "eslint": "^5.6.1",
     "eslint-config-airbnb": "^17.1.0",
     "eslint-loader": "^2.1.1",
     "eslint-plugin-import": "^2.14.0",
     "eslint-plugin-jsx-a11y": "^6.1.1",
     "eslint-plugin-react": "^7.11.1",
+    "extract-text-webpack-plugin": "^3.0.2",
     "html-webpack-plugin": "^3.2.0",
+    "node-sass": "^4.9.3",
+    "nyc": "^13.0.1",
     "react-hot-loader": "^4.3.10",
+    "redbox-react": "^1.6.0",
+    "sass-loader": "^7.1.0",
+    "sinon": "^6.3.5",
+    "style-loader": "^0.23.0",
+    "uglifyjs-webpack-plugin": "^2.0.1",
+    "url-loader": "^1.1.1",
     "webpack": "^4.19.1",
     "webpack-cli": "^3.1.0",
-    "webpack-dev-server": "^3.1.8"
+    "webpack-dev-server": "^3.1.8",
+    "webpack-hot-middleware": "^2.24.2"
   }
 }

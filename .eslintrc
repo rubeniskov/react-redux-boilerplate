@@ -3,7 +3,8 @@
   "env": {
     "browser": true,
     "node": true,
-    "mocha": true
+    "mocha": true,
+    "es6": true
   },
   "extends": "airbnb",
   "rules": {
@@ -19,6 +20,7 @@
     "no-undef": 0,
     "react/no-array-index-key": 0,
     "import/prefer-default-export": 0,
+    "import/no-named-as-default": 0,
     "global-require": 0,
     "react/prop-types": 0,
     "comma-dangle": ["off"],
@@ -32,11 +34,12 @@
     "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
     "react/jsx-space-before-closing": ["off"],
     "react/prefer-stateless-function": ["off"],
-    "no-underscore-dangle": [ "error", { "allowAfterThis": true }],
+    "no-underscore-dangle": ["off"],
     "react/jsx-no-bind": 0,
     "react/no-multi-comp": 0,
     "no-plusplus": 0,
     "no-shadow": 0,
+    "no-multi-assign": 0,
     "react/sort-comp": ["warn"],
     "class-methods-use-this": ["warn"]
   }

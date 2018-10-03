@@ -1,40 +1,125 @@
-const path = require('path'),
-      webpack = require('webpack'),
-      HtmlWebpackPlugin = require('html-webpack-plugin');
+const path = require('path');
+const webpack = require('webpack');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+
+const mode = process.env.NODE_ENV || 'production';
+const __DEV__ = mode === 'development';
+const __PRO__ = mode === 'production';
+const entry = require.resolve('.');
+const dirname = path.dirname(entry);
 
 module.exports = {
-  entry: './src/index.js',
-  output: {
-    path: __dirname + '/dist',
-    publicPath: '/',
-    filename: 'bundle.js'
+  mode,
+  entry: {
+    main: [require.resolve('.')]
   },
+  output: {
+    path: `${__dirname}/dist`,
+    publicPath: '/',
+    filename: __DEV__ ? '[name].js' : '[name].[hash].js',
+  },
+  devtool: __DEV__ ? 'source-map' : false,
   module: {
-    rules: [
-      {
-        test: /\.(js|jsx)$/,
-        exclude: /node_modules/,
-        use: ['babel-loader']
-      },
-      {
-        test: /\.js$/,
-        exclude: /node_modules/,
-        use: ['eslint-loader']
-      }
-    ]
+    rules: []
   },
   resolve: {
-    extensions: ['*', '.js', '.jsx']
+    extensions: ['*', '.js', '.json']
   },
   plugins: [
-    new HtmlWebpackPlugin({
-        title: 'Custom template',
-        template: path.join(__dirname, 'src/index.html')
-    }),
-    new webpack.HotModuleReplacementPlugin()
-  ],
+    new webpack.DefinePlugin(Object.assign({
+      'process.env': { NODE_ENV: JSON.stringify(mode) },
+      __DEV__
+    }, {/* GLOBALS */}))
+  ]/* ,
   devServer: {
     contentBase: './dist',
     hot: true
-  }
+  // } */
 };
+
+
+// JavaScript
+// ------------------------------------
+
+module.exports.module.rules.push({
+  test: /\.(js|jsx)$/,
+  exclude: /node_modules/,
+  use: ['babel-loader']
+});
+
+
+// Linter
+// ------------------------------------
+module.exports.module.rules.push({
+  test: /\.js$/,
+  exclude: /node_modules/,
+  use: ['eslint-loader']
+});
+
+// Styles
+// ------------------------------------
+module.exports.module.rules.push({
+  test: /\.scss$/,
+  use: [
+    'style-loader', // creates style nodes from JS strings
+    'css-loader', // translates CSS into CommonJS
+    'sass-loader' // compiles Sass to CSS, using Node Sass by default
+  ]
+});
+
+// Images
+// ------------------------------------
+module.exports.module.rules.push({
+  test: /\.(png|jpg|gif)$/,
+  loader: 'url-loader',
+  options: {
+    limit: 8192,
+  },
+});
+
+// HTML Template
+// ------------------------------------
+module.exports.plugins.push(new HtmlWebpackPlugin({
+  template: path.join(dirname, 'index.html'),
+  inject: true,
+  minify: {
+    collapseWhitespace: true,
+  },
+}));
+
+// Development Tools
+// ------------------------------------
+if (__DEV__) {
+  module.exports.plugins.push(
+    new webpack.HotModuleReplacementPlugin(),
+    new webpack.NamedModulesPlugin()
+  );
+}
+
+// Production Optimizations
+// ------------------------------------
+if (__PRO__) {
+  module.exports.optimization = {
+    minimizer: [
+      // we specify a custom UglifyJsPlugin here to get source maps in production
+      new UglifyJsPlugin({
+        cache: true,
+        parallel: true,
+        uglifyOptions: {
+          warnings: false,
+          compress: false,
+          mangle: true
+        },
+        sourceMap: !!module.exports.devtool
+      })
+    ]
+  };
+
+  module.exports.plugins.push(
+    new webpack.LoaderOptionsPlugin({
+      minimize: true,
+      debug: false,
+    })
+  );
+}

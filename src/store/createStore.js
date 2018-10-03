@@ -1,4 +1,6 @@
-import { createStore, combineReducers, applyMiddleware } from 'redux';
+import {
+  createStore, combineReducers, applyMiddleware, compose
+} from 'redux';
 import { createEpicMiddleware } from 'redux-observable';
 import { rootEpic } from '../epics/users';
 
@@ -11,6 +13,15 @@ const defaultUserState = {
 };
 
 export default (initialState = {}) => {
+  let composeEnhancers = compose;
+
+  if (__DEV__) {
+    console.log('pepe');
+    if (typeof global.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ === 'function') {
+      composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__;
+    }
+  }
+
   const store = createStore(combineReducers({
     user(state = defaultUserState, action) {
       console.log(action);
@@ -30,7 +41,7 @@ export default (initialState = {}) => {
           return state;
       }
     }
-  }), initialState, applyMiddleware(epicMiddleware));
+  }), initialState, composeEnhancers(applyMiddleware(epicMiddleware)));
   epicMiddleware.run(rootEpic);
   return store;
 };
