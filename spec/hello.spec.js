@@ -4,5 +4,5 @@ import {shallow} from 'enzyme';
 import App from '../src/components/App';
 
 test('Should be a function.', (t) => {
-  t.is(typeof global, 'object');
+  t.is(typeof App, 'function');
 });

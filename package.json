@@ -22,6 +22,9 @@
   "ava": {
     "files": [
       "**/*.spec.js"
+    ],
+    "require": [
+      "@babel/register"
     ]
   },
   "author": "",
