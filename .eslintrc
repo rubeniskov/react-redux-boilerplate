@@ -40,8 +40,10 @@
     "no-plusplus": 0,
     "no-shadow": 0,
     "no-multi-assign": 0,
+    "no-param-reassign": ["off"],
     "react/sort-comp": ["warn"],
     "class-methods-use-this": ["warn"],
-    "react/forbid-prop-types": ["off"]
+    "react/forbid-prop-types": ["off"],
+    "one-var": ["off"]
   }
 }
