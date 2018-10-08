@@ -1,1 +1,3 @@
-export default store => ([{path: '/home'}]);
+import HomeRoute from './Home';
+
+export default [HomeRoute];
