@@ -1,20 +1,30 @@
 import './index.scss';
 import React from 'react';
+import { applyMiddleware, compose } from 'redux';
 import ReactDOM from 'react-dom';
-import {createStore} from './store';
+import { syncHistoryWithStore } from 'react-router-redux';
+import enhancerLoader from './utils/enhancerReduxLoader';
+import {
+  createLoader, createEpicMiddleware, createRoutes, createHistory, createStore
+} from './utils';
 import App from './components/App';
-import routes from './routes/index';
+import _routes from './routes';
 
 // Store Initialization
 // ------------------------------------
-const store = createStore(global.__INITIAL_STATE__);
-
+const epic = createEpicMiddleware();
+const loader = createLoader();
+const store = createStore(global.__INITIAL_STATE__, compose(applyMiddleware(epic), enhancerLoader(loader)));
+const routes = createRoutes(_routes)(store, epic);
+const history = createHistory();
 // Render Setup
 // ------------------------------------
 const MOUNT_NODE = global.document.getElementById('app');
 
-let render = () => {
-  ReactDOM.render(<App store={store} routes={routes(store)} />, MOUNT_NODE);
+let render = (elem) => {
+  ReactDOM.render(<App {...{
+    history, store, routes, loader
+  }} />, elem);
 };
 
 // Development Tools
@@ -30,7 +40,7 @@ if (__DEV__) {
 
     render = () => {
       try {
-        renderApp();
+        renderApp(MOUNT_NODE);
       } catch (e) {
         console.error(e);
         renderError(e);
@@ -42,7 +52,7 @@ if (__DEV__) {
       './components/App', './routes/index'
     ], () => setImmediate(() => {
       ReactDOM.unmountComponentAtNode(MOUNT_NODE);
-      render();
+      render(MOUNT_NODE);
     }));
   }
 }
@@ -51,4 +61,4 @@ if (__DEV__) {
 // ------------------------------------
 // if (!__TEST__) render();
 //
-render();
+render(MOUNT_NODE);
