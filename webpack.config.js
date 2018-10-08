@@ -24,6 +24,9 @@ module.exports = {
     rules: []
   },
   resolve: {
+    alias: {
+      '@local': path.resolve(__dirname, 'src')
+    },
     extensions: ['*', '.js', '.json']
   },
   plugins: [
@@ -126,7 +129,6 @@ if (__DEV__) {
 if (__PRO__) {
   module.exports.optimization = {
     minimizer: [
-      // we specify a custom UglifyJsPlugin here to get source maps in production
       new UglifyJsPlugin({
         cache: true,
         parallel: true,
@@ -134,8 +136,7 @@ if (__PRO__) {
           warnings: false,
           compress: false,
           mangle: true
-        },
-        sourceMap: !!module.exports.devtool
+        }
       })
     ]
   };
